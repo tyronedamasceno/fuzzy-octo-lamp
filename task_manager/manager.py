@@ -18,4 +18,5 @@ def list_tasks():
 def create_task(task: InputTask):
     new_task = task.dict()
     new_task.update({"id": uuid4()})
+    TASKS.append(new_task)
     return new_task

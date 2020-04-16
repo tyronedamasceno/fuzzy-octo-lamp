@@ -94,6 +94,7 @@ def test_create_task_endpoint_should_return_created_task_itself():
     resp_json.pop("id")
     resp_json.pop("status")
     assert resp_json == task_payload
+    TASKS.clear()
 
 
 def test_creating_task_should_return_an_unique_id():
@@ -103,6 +104,7 @@ def test_creating_task_should_return_an_unique_id():
     resp1 = client.post("/tasks", json=task_payload1)
     resp2 = client.post("/tasks", json=task_payload2)
     assert resp1.json()["id"] != resp2.json()["id"]
+    TASKS.clear()
 
 
 def test_created_task_has_default_status_not_done():
@@ -110,6 +112,7 @@ def test_created_task_has_default_status_not_done():
     task_payload = {"title": "nice title", "description": "hey apple"}
     resp = client.post("/tasks", json=task_payload)
     assert resp.json()["status"] == PossibleStatus.not_done
+    TASKS.clear()
 
 
 def test_creating_task_should_return_201():
@@ -117,3 +120,12 @@ def test_creating_task_should_return_201():
     task_payload = {"title": "nice title", "description": "hey apple"}
     resp = client.post("/tasks", json=task_payload)
     assert resp.status_code == status.HTTP_201_CREATED
+    TASKS.clear()
+
+
+def test_creating_task_should_add_to_tasks_list():
+    client = TestClient(app)
+    task_payload = {"title": "nice title", "description": "hey apple"}
+    client.post("/tasks", json=task_payload)
+    assert len(TASKS) == 1
+    TASKS.clear()
