@@ -1,8 +1,14 @@
+from copy import copy
+from uuid import uuid4
+
 from starlette import status
 from starlette.testclient import TestClient
 
 from task_manager.manager import app, TASKS
-from task_manager.models import PossibleStatus
+from task_manager.models import PossibleStatus, Task
+
+DEFAULT_TASK = Task(id=uuid4(), title="nice title",
+                    description="this is a really nice task")
 
 
 def test_listing_tasks_should_return_200():
@@ -24,7 +30,7 @@ def test_listing_tasks_should_return_list():
 
 
 def test_listing_tasks_return_one_task_with_id():
-    TASKS.append({"id": 1})
+    TASKS.append(copy(DEFAULT_TASK))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "id" in resp.json().pop()
@@ -32,7 +38,7 @@ def test_listing_tasks_return_one_task_with_id():
 
 
 def test_listing_tasks_return_one_task_with_title():
-    TASKS.append({"title": "test task"})
+    TASKS.append(copy(DEFAULT_TASK))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "title" in resp.json().pop()
@@ -40,7 +46,7 @@ def test_listing_tasks_return_one_task_with_title():
 
 
 def test_listing_tasks_return_one_task_with_description():
-    TASKS.append({"description": "this is a really nice task"})
+    TASKS.append(copy(DEFAULT_TASK))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "description" in resp.json().pop()
@@ -48,7 +54,7 @@ def test_listing_tasks_return_one_task_with_description():
 
 
 def test_listing_tasks_return_one_task_with_status():
-    TASKS.append({"status": "done"})
+    TASKS.append(copy(DEFAULT_TASK))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "status" in resp.json().pop()
