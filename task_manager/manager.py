@@ -28,8 +28,18 @@ async def retrieve_task(task_id: UUID):
 
 
 @app.post("/tasks", response_model=Task, status_code=201)
-def create_task(task: InputTask):
+async def create_task(task: InputTask):
     new_task = task.dict()
     new_task.update({"id": uuid4()})
     TASKS.append(new_task)
     return new_task
+
+
+@app.delete("/tasks/{task_id}", status_code=204)
+async def delete_task(task_id: UUID):
+    global TASKS
+    filtered_tasks = list(filter(lambda task: task["id"] != task_id, TASKS))
+    if len(TASKS) == len(filtered_tasks):
+        raise HTTPException(status_code=404, detail="Not found")
+    TASKS = filtered_tasks
+    return

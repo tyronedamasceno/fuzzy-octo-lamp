@@ -172,3 +172,26 @@ def test_listing_tasks_sorted_by_description():
     description_list = list(map(lambda task: task["description"], resp.json()))
     assert description_list == sorted(description_list)
     TASKS.clear()
+
+
+def test_deleting_a_task_with_invalid_id_return_404():
+    client = TestClient(app)
+    resp = client.delete(f"/tasks/{uuid4()}")
+    assert resp.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_deleting_a_task_correctly_return_204():
+    TASKS.append(copy(DEFAULT_TASK.dict()))
+    client = TestClient(app)
+    resp = client.delete(f"/tasks/{DEFAULT_TASK.id}")
+    assert resp.status_code == status.HTTP_204_NO_CONTENT
+    TASKS.clear()
+
+
+def test_deleting_a_task_really_removes_it_from_tasks_list():
+    TASKS.append(copy(DEFAULT_TASK.dict()))
+    client = TestClient(app)
+    client.delete(f"/tasks/{DEFAULT_TASK.id}")
+    resp = client.get(f"/tasks/{DEFAULT_TASK.id}")
+    assert resp.status_code == status.HTTP_404_NOT_FOUND
+    TASKS.clear()
