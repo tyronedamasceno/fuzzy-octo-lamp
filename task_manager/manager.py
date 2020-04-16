@@ -1,3 +1,4 @@
+from typing import List
 from uuid import uuid4
 
 from fastapi import FastAPI
@@ -9,7 +10,7 @@ TASKS = []
 app = FastAPI()
 
 
-@app.get("/tasks")
+@app.get("/tasks", response_model=List[Task])
 def list_tasks():
     return TASKS
 
