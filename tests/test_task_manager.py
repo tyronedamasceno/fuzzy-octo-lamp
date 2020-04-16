@@ -150,3 +150,25 @@ def test_retrieving_task_ok_return_200():
     resp = client.get(f"/tasks/{DEFAULT_TASK.id}")
     assert resp.status_code == status.HTTP_200_OK
     TASKS.clear()
+
+
+def test_listing_tasks_with_sort_query_param_sorted_by_title():
+    TASKS.append(Task(id=uuid4(), title="banana", description="xpto").dict())
+    TASKS.append(Task(id=uuid4(), title="melon", description="xpto").dict())
+    TASKS.append(Task(id=uuid4(), title="apple", description="xpto").dict())
+    client = TestClient(app)
+    resp = client.get("/tasks?sort=true")
+    titles_list = list(map(lambda task: task["title"], resp.json()))
+    assert titles_list == sorted(titles_list)
+    TASKS.clear()
+
+
+def test_listing_tasks_sorted_by_description():
+    TASKS.append(Task(id=uuid4(), title="xpto", description="banana").dict())
+    TASKS.append(Task(id=uuid4(), title="xpto", description="melon").dict())
+    TASKS.append(Task(id=uuid4(), title="xpto", description="apple").dict())
+    client = TestClient(app)
+    resp = client.get("/tasks?sort=true&sort_by=description")
+    description_list = list(map(lambda task: task["description"], resp.json()))
+    assert description_list == sorted(description_list)
+    TASKS.clear()
