@@ -37,9 +37,8 @@ async def create_task(task: InputTask):
 
 @app.delete("/tasks/{task_id}", status_code=204)
 async def delete_task(task_id: UUID):
-    global TASKS
-    filtered_tasks = list(filter(lambda task: task["id"] != task_id, TASKS))
-    if len(TASKS) == len(filtered_tasks):
+    tasks_to_remove = list(filter(lambda task: task["id"] == task_id, TASKS))
+    if not tasks_to_remove:
         raise HTTPException(status_code=404, detail="Not found")
-    TASKS = filtered_tasks
+    TASKS.remove(tasks_to_remove[0])
     return
