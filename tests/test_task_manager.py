@@ -1,5 +1,5 @@
+from starlette import status
 from starlette.testclient import TestClient
-from starlette.status import HTTP_200_OK
 
 from task_manager.manager import app, TASKS
 
@@ -7,7 +7,7 @@ from task_manager.manager import app, TASKS
 def test_listing_tasks_should_return_200():
     client = TestClient(app)
     resp = client.get("/tasks")
-    assert resp.status_code == HTTP_200_OK
+    assert resp.status_code == status.HTTP_200_OK
 
 
 def test_listing_tasks_should_return_json():
@@ -52,3 +52,41 @@ def test_listing_tasks_return_one_task_with_status():
     resp = client.get("/tasks")
     assert "status" in resp.json().pop()
     TASKS.clear()
+
+
+def test_task_resource_should_accept_post():
+    client = TestClient(app)
+    resp = client.post("/tasks")
+    assert resp.status_code != status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+def test_created_task_should_have_title():
+    client = TestClient(app)
+    resp = client.post("/tasks", json={})
+    assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+def test_created_task_title_should_have_at_least_3_characters():
+    client = TestClient(app)
+    resp = client.post("/tasks", json={"title": "aa"})
+    assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+def test_created_task_title_should_have_at_most_50_characters():
+    client = TestClient(app)
+    resp = client.post("/tasks", json={"title": 51 * "a"})
+    assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+def test_created_task_description_should_have_at_most_140_characters():
+    client = TestClient(app)
+    task_payload = {"title": "nice title", "description": 141 * "a"}
+    resp = client.post("/tasks", json=task_payload)
+    assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+def test_create_task_endpoint_should_return_created_task_itself():
+    client = TestClient(app)
+    task_payload = {"title": "nice title", "description": "hey apple"}
+    resp = client.post("/tasks", json=task_payload)
+    assert resp.json() == task_payload
