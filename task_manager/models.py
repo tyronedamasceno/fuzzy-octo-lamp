@@ -1,13 +1,8 @@
-from enum import Enum
 from uuid import UUID
 
 from pydantic import BaseModel, constr
 
-
-class PossibleStatus(str, Enum):
-    not_done = "not done"
-    in_progress = "in progress"
-    done = "done"
+from task_manager.enums import PossibleStatus
 
 
 class InputTask(BaseModel):

@@ -5,7 +5,8 @@ from starlette import status
 from starlette.testclient import TestClient
 
 from task_manager.manager import app, TASKS
-from task_manager.models import PossibleStatus, Task
+from task_manager.models import Task
+from task_manager.enums import PossibleStatus
 
 DEFAULT_TASK = Task(id=uuid4(), title="nice title",
                     description="this is a really nice task")
