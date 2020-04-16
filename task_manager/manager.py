@@ -1,8 +1,7 @@
 from typing import List
 from uuid import uuid4, UUID
 
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException
 
 from task_manager.enums import SortingKeys
 from task_manager.models import InputTask, Task
@@ -24,7 +23,7 @@ async def list_tasks(sort: bool = False,
 async def retrieve_task(task_id: UUID):
     task = list(filter(lambda task: task["id"] == task_id, TASKS))
     if not task:
-        return JSONResponse(status_code=404)
+        raise HTTPException(status_code=404, detail="Not found")
     return task[0]
 
 
