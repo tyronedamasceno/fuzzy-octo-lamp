@@ -30,7 +30,7 @@ def test_listing_tasks_should_return_list():
 
 
 def test_listing_tasks_return_one_task_with_id():
-    TASKS.append(copy(DEFAULT_TASK))
+    TASKS.append(copy(DEFAULT_TASK.dict()))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "id" in resp.json().pop()
@@ -38,7 +38,7 @@ def test_listing_tasks_return_one_task_with_id():
 
 
 def test_listing_tasks_return_one_task_with_title():
-    TASKS.append(copy(DEFAULT_TASK))
+    TASKS.append(copy(DEFAULT_TASK.dict()))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "title" in resp.json().pop()
@@ -46,7 +46,7 @@ def test_listing_tasks_return_one_task_with_title():
 
 
 def test_listing_tasks_return_one_task_with_description():
-    TASKS.append(copy(DEFAULT_TASK))
+    TASKS.append(copy(DEFAULT_TASK.dict()))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "description" in resp.json().pop()
@@ -54,7 +54,7 @@ def test_listing_tasks_return_one_task_with_description():
 
 
 def test_listing_tasks_return_one_task_with_status():
-    TASKS.append(copy(DEFAULT_TASK))
+    TASKS.append(copy(DEFAULT_TASK.dict()))
     client = TestClient(app)
     resp = client.get("/tasks")
     assert "status" in resp.json().pop()
@@ -134,4 +134,18 @@ def test_creating_task_should_add_to_tasks_list():
     task_payload = {"title": "nice title", "description": "hey apple"}
     client.post("/tasks", json=task_payload)
     assert len(TASKS) == 1
+    TASKS.clear()
+
+
+def test_retrieving_task_with_invalid_id_return_404():
+    client = TestClient(app)
+    resp = client.get(f"/tasks/{uuid4()}")
+    assert resp.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_retrieving_task_ok_return_200():
+    TASKS.append(copy(DEFAULT_TASK.dict()))
+    client = TestClient(app)
+    resp = client.get(f"/tasks/{DEFAULT_TASK.id}")
+    assert resp.status_code == status.HTTP_200_OK
     TASKS.clear()
