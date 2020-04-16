@@ -89,4 +89,15 @@ def test_create_task_endpoint_should_return_created_task_itself():
     client = TestClient(app)
     task_payload = {"title": "nice title", "description": "hey apple"}
     resp = client.post("/tasks", json=task_payload)
-    assert resp.json() == task_payload
+    resp_json = resp.json()
+    resp_json.pop("id")
+    assert resp_json == task_payload
+
+
+def test_creating_task_should_return_an_unique_id():
+    client = TestClient(app)
+    task_payload1 = {"title": "nice title", "description": "hey apple"}
+    task_payload2 = {"title": "title monster", "description": "something"}
+    resp1 = client.post("/tasks", json=task_payload1)
+    resp2 = client.post("/tasks", json=task_payload2)
+    assert resp1.json()["id"] != resp2.json()["id"]

@@ -1,6 +1,8 @@
+from uuid import uuid4
+
 from fastapi import FastAPI
 
-from task_manager.models import Task
+from task_manager.models import InputTask, Task
 
 TASKS = []
 
@@ -12,6 +14,8 @@ def list_tasks():
     return TASKS
 
 
-@app.post("/tasks")
-def create_task(task: Task):
-    return task
+@app.post("/tasks", response_model=Task)
+def create_task(task: InputTask):
+    new_task = task.dict()
+    new_task.update({"id": uuid4()})
+    return new_task
