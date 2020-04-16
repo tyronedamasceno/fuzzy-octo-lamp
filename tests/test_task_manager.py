@@ -2,6 +2,7 @@ from starlette import status
 from starlette.testclient import TestClient
 
 from task_manager.manager import app, TASKS
+from task_manager.models import PossibleStatus
 
 
 def test_listing_tasks_should_return_200():
@@ -91,6 +92,7 @@ def test_create_task_endpoint_should_return_created_task_itself():
     resp = client.post("/tasks", json=task_payload)
     resp_json = resp.json()
     resp_json.pop("id")
+    resp_json.pop("status")
     assert resp_json == task_payload
 
 
@@ -101,3 +103,17 @@ def test_creating_task_should_return_an_unique_id():
     resp1 = client.post("/tasks", json=task_payload1)
     resp2 = client.post("/tasks", json=task_payload2)
     assert resp1.json()["id"] != resp2.json()["id"]
+
+
+def test_created_task_has_default_status_not_done():
+    client = TestClient(app)
+    task_payload = {"title": "nice title", "description": "hey apple"}
+    resp = client.post("/tasks", json=task_payload)
+    assert resp.json()["status"] == PossibleStatus.not_done
+
+
+def test_creating_task_should_return_201():
+    client = TestClient(app)
+    task_payload = {"title": "nice title", "description": "hey apple"}
+    resp = client.post("/tasks", json=task_payload)
+    assert resp.status_code == status.HTTP_201_CREATED
