@@ -13,7 +13,8 @@ app = FastAPI()
 
 
 @app.get("/tasks", response_model=List[Task])
-async def list_tasks(sort: bool = False, sort_by: SortingKeys = SortingKeys.title):
+async def list_tasks(sort: bool = False,
+                     sort_by: SortingKeys = SortingKeys.title):
     if sort:
         return sorted(TASKS, key=lambda t: t.get(sort_by))
     return TASKS
