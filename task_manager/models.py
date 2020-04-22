@@ -8,6 +8,7 @@ from task_manager.enums import PossibleStatus
 TASKS = []
 
 fake_users_db = {
+    # hashed_password == secret
     "tyrone": {
         "username": "tyrone",
         "email": "tyronedamasceno@gmail.com",
