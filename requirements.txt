@@ -1,4 +1,6 @@
+bcrypt==3.1.7
 fastapi==0.54.1
 passlib==1.7.2
 PyJWT==1.7.1
+python-multipart==0.0.5
 uvicorn==0.11.3
