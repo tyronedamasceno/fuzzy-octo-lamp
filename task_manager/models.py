@@ -4,6 +4,8 @@ from pydantic import BaseModel, constr
 
 from task_manager.enums import PossibleStatus
 
+TASKS = []
+
 
 class InputTask(BaseModel):
     title: constr(min_length=3, max_length=50)
