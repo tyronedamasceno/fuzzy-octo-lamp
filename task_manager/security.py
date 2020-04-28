@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 
 from task_manager.exceptions import CREDENTIALS_ERROR, INACTIVE_USER_ERROR
-from task_manager.models import (
+from task_manager.schemas import (
     fake_users_db, UserInDB, User, Token, TokenData
 )
 

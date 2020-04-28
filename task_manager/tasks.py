@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 
 from task_manager.enums import SortingKeys
-from task_manager.models import InputTask, Task, TASKS
+from task_manager.schemas import InputTask, Task, TASKS
 
 router = APIRouter()
 
