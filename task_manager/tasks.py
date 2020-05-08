@@ -1,8 +1,7 @@
 from typing import List
 from uuid import uuid4, UUID
 
-from fastapi import APIRouter
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 
 from task_manager.enums import SortingKeys
 from task_manager.schemas import InputTask, Task, TASKS
