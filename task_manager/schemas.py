@@ -1,5 +1,4 @@
 from typing import Optional
-from uuid import UUID
 
 from pydantic import BaseModel, constr
 
@@ -19,14 +18,21 @@ fake_users_db = {
 }
 
 
-class InputTask(BaseModel):
+class TaskBase(BaseModel):
     title: constr(min_length=3, max_length=50)
     description: constr(max_length=140)
     status: PossibleStatus = PossibleStatus.not_done
 
 
-class Task(InputTask):
-    id: UUID
+class TaskCreate(TaskBase):
+    ...
+
+
+class Task(TaskBase):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 
 class Token(BaseModel):
